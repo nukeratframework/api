@@ -1,0 +1,35 @@
+import json
+import requests
+import urllib3
+import api
+
+urllib3.disable_warnings()
+
+
+def main():
+    host_tag = 'm1c15a'
+    explorer_path = '/home'
+
+    user, password, secret = api.operator_key.split(':', 2)
+    base = api.team_server_url.rstrip('/')
+
+    token = requests.post(
+        f'{base}/auth/login',
+        json={'user': user, 'pass': password, 'secret': secret},
+        verify=False,
+    ).json()['access_token']
+
+    headers = {'Authorization': f'Bearer {token}'}
+
+    response = requests.post(
+        f'{base}/api/explorer/',
+        headers=headers,
+        json={'host': host_tag, 'path': explorer_path, 'autoRefresh': True},
+        verify=False,
+        timeout=120,
+    )
+    print(json.dumps(response.json(), indent=2))
+
+
+if __name__ == '__main__':
+    main()
