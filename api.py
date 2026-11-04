@@ -1,4 +1,3 @@
-import json
 import requests
 import urllib3
 from implant.aes import build_implant_body
@@ -10,31 +9,6 @@ implant_listener_url = 'http://192.168.15.21:9090'
 listener_response_template = ''
 
 urllib3.disable_warnings()
-
-
-def print_terminal_response(response):
-    content_type = (response.headers.get('Content-Type') or '').split(';')[0].strip().lower()
-    if content_type == 'application/x-ndjson':
-        for line in response.iter_lines(decode_unicode=True):
-            if line is None:
-                continue
-            text = str(line).strip()
-            if text:
-                print(text)
-        return
-    print(json.dumps(response.json(), indent=2))
-
-
-def summarize_terminal_ndjson(response):
-    events = []
-    for line in response.iter_lines():
-        if not line:
-            continue
-        try:
-            events.append(json.loads(line))
-        except json.JSONDecodeError:
-            events.append({'status': 'chunk', 'binary_bytes': len(line)})
-    return events
 
 
 def team_server_example(command):

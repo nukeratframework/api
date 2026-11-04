@@ -9,6 +9,31 @@ import api
 urllib3.disable_warnings()
 
 
+def print_terminal_response(response):
+    content_type = (response.headers.get('Content-Type') or '').split(';')[0].strip().lower()
+    if content_type == 'application/x-ndjson':
+        for line in response.iter_lines(decode_unicode=True):
+            if line is None:
+                continue
+            text = str(line).strip()
+            if text:
+                print(text)
+        return
+    print(json.dumps(response.json(), indent=2))
+
+
+def summarize_terminal_ndjson(response):
+    events = []
+    for line in response.iter_lines():
+        if not line:
+            continue
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError:
+            events.append({'status': 'chunk', 'binary_bytes': len(line)})
+    return events
+
+
 def main():
     host_tag = 'm1c15a'
     terminal_command = 'whoami'
@@ -37,7 +62,7 @@ def main():
         verify=False,
         timeout=120,
     )
-    api.print_terminal_response(response)
+    print_terminal_response(response)
 
     demo_file_upload = False
     if demo_file_upload:
@@ -57,7 +82,7 @@ def main():
             verify=False,
             timeout=120,
         )
-        api.print_terminal_response(upload_response)
+        print_terminal_response(upload_response)
 
     demo_download = False
     if demo_download:
@@ -75,7 +100,7 @@ def main():
             timeout=600,
             stream=True,
         )
-        print(json.dumps(api.summarize_terminal_ndjson(download_response), indent=2))
+        print(json.dumps(summarize_terminal_ndjson(download_response), indent=2))
 
 
 if __name__ == '__main__':
