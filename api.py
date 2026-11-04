@@ -142,4 +142,4 @@ def implant_example(command):
 
 if __name__ == '__main__':
     print(team_server_example('whoami'))
-    #print(implant_example('probe'))
+    print(implant_example('probe'))
