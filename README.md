@@ -11,4 +11,4 @@ For demonstration purposes, you can find a minimal example of API usage in the `
 
 # Documentation
 
-Complete documentation for all routes, including schemas, is available at: [https://nukerat.com/docs/api/](https://nukerat.com/docs/api/).
+Complete documentation for all routes, including schemas, is available at: [https://nukerat.com/docs/rest-api/](https://nukerat.com/docs/rest-api/).
